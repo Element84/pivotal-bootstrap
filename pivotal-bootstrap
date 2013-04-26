@@ -42,7 +42,7 @@ def parse_story_file(file, opts)
       puts "Skipping \"#{name}\" group"
     end
   end
-  result.reverse
+  result
 end
 
 def parse_stories(opts)
