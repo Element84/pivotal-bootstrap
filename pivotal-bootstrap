@@ -1,0 +1,115 @@
+#!/usr/bin/env ruby
+
+# Here be dragons
+
+require 'httparty'
+require 'trollop'
+require 'yaml'
+
+def read_stories
+  YAML.load_file('stories.yml')
+end
+
+def parse_story_file(file, opts)
+  groups = YAML.load_file(file)
+
+  result = []
+  groups.each do |name, group|
+    if opts[:interactive]
+      print("Include stories that apply to #{group['applies_to']}? [y/N] ")
+      process_group = STDIN.gets.chomp.downcase == 'y'
+    else
+      process_group = opts[:all] || opts[:groups].include?(name)
+    end
+
+    if process_group
+      group['labels'].each do |label_name, label|
+        ['chores', 'features', 'releases', 'stories'].each do |sub_group|
+          story_type = sub_group == 'stories' ? 'feature' : sub_group.chop
+
+          defaults = {
+            labels: label_name,
+            story_type: story_type
+          }
+
+          result += (label[sub_group] || []).map do |story|
+            story = {name: story} if story.is_a? String
+            defaults.merge(story)
+          end
+        end
+      end
+    else
+      puts "Skipping \"#{name}\" group"
+    end
+  end
+  result.reverse
+end
+
+def parse_stories(opts)
+  opts[:files].map {|f| parse_story_file(f, opts)}.flatten(1).reverse
+end
+
+def bootstrap_stories(opts)
+  project_stories_url = "https://www.pivotaltracker.com/services/v3/projects/#{opts[:project]}/stories"
+  http_options = {headers: {'X-TrackerToken' => opts[:token]}}
+
+  $stdout.sync = true
+
+  parse_stories(opts).each do |story|
+    print "Loading story \"#{story[:name]}\"........"
+    response = HTTParty.post(project_stories_url, http_options.merge(body: {story: story}))
+    if response.code >= 400
+      puts "Fail!"
+      puts "An error occurred while loading stories:"
+      puts response.parsed_response["response"]["__content__"]
+      puts "Exiting"
+      exit false
+    end
+    puts "Done!"
+  end
+end
+
+
+def parse_options
+  opts = Trollop::options do
+    banner <<-EOS
+Loads stories into pivotal
+
+Usage:
+       pivotal_bootstrap [options] <filenames>*
+
+
+where <filenames> are a list of YAML files containing stories to load.
+
+See stories.yml for details on the YAML format.
+
+Available [options]:
+EOS
+
+    opt :all, "Import all story groups in the given files without prompting"
+    opt :groups, "A space-separated list of story groups to import", type: :strings
+    opt :token, "Your Pivotal API token.  See pivotal_config.yml.example for details on setting this value.", type: :strings
+    opt :project, "Pivotal project id from the project URL", type: :string, required: true
+  end
+
+  opts[:files] = ARGV
+  opts[:files] << 'stories.yml' if opts[:files].size == 0 && File.exist?('stories.yml')
+
+  opts[:groups] ||= []
+  opts[:interactive] ||= !opts[:all] && opts[:groups].size == 0
+
+  unless opts[:token]
+    if File.exist?('pivotal_config.yml')
+      opts[:token] = YAML.load_file('pivotal_config.yml')['token']
+    end
+
+    Trollop::die "You must specify a token on the command line or in pivotal_config.yml" unless opts[:token]
+  end
+
+  Trollop::die "Please specify at least one filename containing stories to import" unless ARGV.length > 0
+
+  opts
+end
+
+
+bootstrap_stories(parse_options)
