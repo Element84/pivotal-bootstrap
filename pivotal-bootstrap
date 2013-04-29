@@ -18,13 +18,16 @@ def parse_story_file(file, opts)
 
     label = attrs['labels'] || name
 
-    ['chores', 'features', 'bugs', 'releases'].each do |story_type|
-      stories = attrs[story_type]
+    # Iterating the hash this way preserves the order of the YML file
+    attrs.each do |name, value|
+      if ['chores', 'features', 'bugs', 'releases'].include? name
 
-      unless stories.nil?
+        story_type = name.chop
+        stories = value
+
         defaults = {
           'labels' => label,
-          'story_type' => story_type.chop
+          'story_type' => story_type
         }
 
         result += stories.map do |story|
@@ -38,6 +41,8 @@ def parse_story_file(file, opts)
 end
 
 def parse_stories(opts)
+  # Load all stories in all provided files in reverse order so they appear
+  # in the correct order in Pivotal
   opts[:files].map {|f| parse_story_file(f, opts)}.flatten(1).reverse
 end
 
