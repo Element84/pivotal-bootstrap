@@ -1,82 +1,34 @@
-# Stories to import into Pivotal Tracker using the pivotal_boostrap script
-#
-#
-# Format details:
-#
-# The top level is a key for a group of stories.  Grouping like this allows
-# you to selectively load only the groups that apply to a project.
-# Use the --groups option to specify the groups to include, --all to load all
-# groups, or specify neither to be prompted for each group.  The "applies_to"
-# field of each group specifies the prompt to use.
-#
-# Each group should have a "labels" key, which contains all of the labels used
-# by that group.  Under each label, there are lists of chore, feature, and
-# release stories with that label.  A story type may be ommitted if it's not
-# applicable
-#
-# A story is typically just a string, specifying the name of the story.  If
-# you need to add a description or other fill out other story fields, you may
-# specify a hash instead.  Example:
-#
-#     features:
-#       - This is a simple feature with just a name
-#       - name: This one is more complex
-#         description: |-
-#           It specifies a description, which can take up
-#           multiple lines.
-#       - Another simple feature
-#
-#
+project:
+  chores:
+    - Set up git project
+    - Set up test build
+    - Set up customer Pivotal accounts
+  features:
+    - Design user interface
+  releases:
+    - Release v1.0
 
-# Group name
-common:
-  # The types of project the group applies to
-  applies_to: all projects
+ios-project:
+  labels: project
+  chores:
+    - Provision customer devices
+    - Submit app for review
+  features:
+    - Add analytics to the project
 
-  labels:
-    # This group has all of its stories under one label, "project".
-    project:
-      # Lists of the chores, features, and releases with this label
-      chores:
-        - Set up git project
-        - Set up test build
-        - Set up customer Pivotal accounts
-      features:
-        - Design user interface
-      releases:
-        - Release v1.0
-
-ios:
-  applies_to: iOS projects
-
-  labels:
-    project:
-      chores:
-        - Provision customer devices
-        - Submit app for review
-      features:
-        - Add analytics to the project
-
-web:
-  applies_to: projects with a web component
-
-  labels:
-    project:
-      chores:
-        - Set up staging server
-        - Set up production server
+web-project:
+  labels: project
+  chores:
+    - Set up staging server
+    - Set up production server
 
 accounts:
-  applies_to: projects with user accounts
-
-  labels:
-    accounts:
-      features:
-        - Create account
-        - Log in
-        - Log out
-        - Change password
-        - Recover password
-        - Show user account information
-        - Update user account information
+  features:
+    - Create account
+    - Log in
+    - Log out
+    - Change password
+    - Recover password
+    - Show user account information
+    - Update user account information
 

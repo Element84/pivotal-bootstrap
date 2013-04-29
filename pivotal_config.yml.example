@@ -1,7 +1,0 @@
-# Example pivotal configuration
-
-# Paste your API token from the bottom of your Pivotal Tracker profile page:
-# https://www.pivotaltracker.com/profile
-token: <your token here>
-
-# You may also specify your token on the command line via the --token parameter
