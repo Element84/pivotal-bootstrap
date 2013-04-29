@@ -1,8 +1,25 @@
+# Sample stories to import into Pivotal Tracker when first creating a project
+
+# The top level specifies a group.  The CLI allows you to specify which groups
+# to import or interactively select groups using these keys.  By default, this
+# is string is used as a label for each item in the group.
 project:
+
+  # Within each group, you may include a list of chores, features, releases,
+  # and/or bugs to import (all optional).
   chores:
+    # Each story type contains a list of stories.  If these are strings, they
+    # represent the story name.
     - Set up git project
-    - Set up test build
     - Set up customer Pivotal accounts
+
+    # You may also specify more fields for the story.  The field names match
+    # those provided by the Pivotal API
+    - name: Set up tests
+      labels: project, tests       # Multiple labels are separated by commas
+      description: >-              # Use YAML syntax for multi-line strings
+        Set up automated testing within the project and a TeamCity build to run
+        the tests.
   features:
     - Design user interface
   releases:

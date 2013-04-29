@@ -18,17 +18,17 @@ def parse_story_file(file, opts)
 
     label = attrs['labels'] || name
 
-    ['chores', 'features', 'releases'].each do |story_type|
+    ['chores', 'features', 'bugs', 'releases'].each do |story_type|
       stories = attrs[story_type]
 
       unless stories.nil?
         defaults = {
-          labels: label,
-          story_type: story_type.chop
+          'labels' => label,
+          'story_type' => story_type.chop
         }
 
         result += stories.map do |story|
-          story = {name: story} if story.is_a? String
+          story = {'name' => story} if story.is_a? String
           defaults.merge(story)
         end
       end
@@ -48,7 +48,7 @@ def bootstrap_stories(opts)
   $stdout.sync = true
 
   parse_stories(opts).each do |story|
-    print "Loading \"[#{story[:labels]}] #{story[:name]}\"........"
+    print "Loading \"[#{story['labels']}] #{story['name']}\"........"
     response = HTTParty.post(project_stories_url, http_options.merge(body: {story: story}))
     if response.code >= 400
       puts "Fail!"
