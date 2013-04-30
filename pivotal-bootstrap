@@ -85,7 +85,7 @@ EOS
 
     opt :all, "Import all group in the given files without prompting"
     opt :groups, "A space-separated list of groups to import", type: :strings
-    opt :token, "Your Pivotal API token.  You may also set this in ~/.pivotal_tracker with the text 'token: <your token>", type: :strings
+    opt :token, "Your Pivotal API token.  You may also set this in ~/.pivotal_tracker with the text 'token: <your token>", type: :string
     opt :project, "Pivotal project id from the project URL", type: :string, required: true
   end
 
