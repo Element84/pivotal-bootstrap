@@ -2,7 +2,7 @@
 
 # The top level specifies a group.  The CLI allows you to specify which groups
 # to import or interactively select groups using these keys.  By default, this
-# is string is used as a label for each item in the group.
+# string is used as a label for each item in the group.
 project:
 
   # Within each group, you may include a list of chores, features, releases,

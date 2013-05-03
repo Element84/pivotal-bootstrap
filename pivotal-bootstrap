@@ -73,7 +73,7 @@ def parse_options
 Loads stories into pivotal
 
 Usage:
-       pivotal_bootstrap [options] <filenames>*
+       pivotal-bootstrap [options] <filenames>*
 
 
 where <filenames> are a list of YAML files containing stories to load.
@@ -83,7 +83,7 @@ See stories.yml for details on the YAML format.
 Available [options]:
 EOS
 
-    opt :all, "Import all group in the given files without prompting"
+    opt :all, "Import all groups in the given files without prompting"
     opt :groups, "A space-separated list of groups to import", type: :strings
     opt :token, "Your Pivotal API token.  You may also set this in ~/.pivotal_tracker with the text 'token: <your token>", type: :string
     opt :project, "Pivotal project id from the project URL", type: :string, required: true
