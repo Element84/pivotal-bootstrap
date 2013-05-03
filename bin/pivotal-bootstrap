@@ -102,7 +102,6 @@ EOS
 
   opts[:groups] ||= []
   opts[:interactive] ||= !opts[:all] && opts[:groups].size == 0
-  puts opts[:groups].inspect
 
   unless opts[:token]
     token_file_path = "#{Dir.home}/.pivotal_tracker"
