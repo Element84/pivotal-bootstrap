@@ -1,8 +1,16 @@
 #!/usr/bin/env ruby
 
+# Allow the binary to be run during development
+if File.exists?(File.join(File.expand_path('../..', __FILE__), '.git'))
+  pivotal_bootstrap_path = File.expand_path('../../lib', __FILE__)
+  $:.unshift(pivotal_bootstrap_path)
+end
+
+require 'rubygems'
 require 'httparty'
 require 'trollop'
 require 'yaml'
+require 'pivotal-bootstrap/version'
 
 def parse_story_file(file, opts)
   groups = YAML.load_file(file)
@@ -70,22 +78,22 @@ end
 def parse_options
   opts = Trollop::options do
     banner <<-EOS
+pivotal-bootstrap (v#{Pivotal::Bootstrap::VERSION})
+
 Loads stories into pivotal
 
 Usage:
        pivotal-bootstrap [options] <filenames>*
 
 
-where <filenames> are a list of YAML files containing stories to load.
+where <filenames> are a list of YAML files containing stories to load.  See stories.yml for details on the YAML format.
 
-See stories.yml for details on the YAML format.
-
-Available [options]:
+Available options:
 EOS
 
     opt :all, "Import all groups in the given files without prompting"
     opt :groups, "A space-separated list of groups to import", type: :strings
-    opt :token, "Your Pivotal API token.  You may also set this in ~/.pivotal_tracker with the text 'token: <your token>", type: :string
+    opt :token, "Your Pivotal API token.  You may also set this in ~/.pivotal_tracker with the text \"token: <your token>\"", type: :string
     opt :project, "Pivotal project id from the project URL", type: :string, required: true
   end
 
@@ -94,6 +102,7 @@ EOS
 
   opts[:groups] ||= []
   opts[:interactive] ||= !opts[:all] && opts[:groups].size == 0
+  puts opts[:groups].inspect
 
   unless opts[:token]
     token_file_path = "#{Dir.home}/.pivotal_tracker"
