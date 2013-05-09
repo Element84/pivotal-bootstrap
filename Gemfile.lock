@@ -1,10 +1,17 @@
+PATH
+  remote: .
+  specs:
+    pivotal-bootstrap (1.0.0)
+      httparty
+      trollop
+
 GEM
   remote: http://rubygems.org/
   specs:
     httparty (0.11.0)
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
-    multi_json (1.7.2)
+    multi_json (1.7.3)
     multi_xml (0.5.3)
     trollop (2.0)
 
@@ -12,5 +19,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  httparty
-  trollop
+  pivotal-bootstrap!
